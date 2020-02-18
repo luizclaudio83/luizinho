@@ -36,71 +36,149 @@
         * Enable eval(): add 'unsafe-eval' to default-src
     * Create your own at http://cspisawesome.com
     -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
-
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <title>Hello World</title>
-	<script type ="text/javascript">
 	
-	     function calcularmedia()
-		 {
-		    var total=0; 
-			//recebendo valores da caixa de texto
+ <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+		
+
+		
+		<script type="text/javascript">
+		
+		
+        
+        window.onload=function(){
+            
+            $("#longitude").hide();
+            $("#latitude").hide();
+            $("#local").hide();
+            $("#btn1").attr('disabled','disabled');
+            $("#btn2").attr('disabled','disabled');
+            $("#mensagem").html("Aguarde....");
+
+            
+            
+            document.addEventListener('deviceready',iniciar);
+        }
+        
+        function iniciar(){
+            //alert ("Dispositivo Pronto!!");
+            //navigator.notification.alert('Bem-vindo!!','','Mensagem');
+            
+            navigator.geolocation.getCurrentPosition(geoSucesso,geoErro);
+        }
+            
+        function geoSucesso(dados){
+            
+            var lat=dados.coords.latitude;
+            var lon=dados.coords.longitude;
+
+			localStorage.setItem('lat',lat);
+            localStorage.setItem('lon',lon);
+            
+            //console.log("Latitude:" + lat);
+            //console.log("Longitude: " + lon);
+            
+            $("#mensagem").html("Sua posição foi definida....");
+            
+            $("#latitude").html("Sua Latitude:" + lat);
+            $("#longitude").html("Sua Longitude:" + lon);
+            $("#btn1").removeAttr('disabled');
+            
+            
+           var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+            url += lat + ",";
+            url += lon + "&key=";
+            url += "AIzaSyDnF5EkADLnXWLZmQFELB7WueUvqHF0bm4";
+			
+			                   
+		        $.ajax({
+                dataType:"json",
+                url:url,
+                error:function(e){
+                    $("#local").html("Não foi possível definir a sua localização :(");
+                    //$("#local").html("Houve um erro:" + e.message);
+                },
+                success: function(r){
+                    //console.log(r);
+                    $("#local").html("Sua localização:" + r.results[9].formatted_address);
+                }
+            })
+
+            
+        }
+            
+        function geoErro(e){
+            //alert("Houve um erro:" + e.message);
+            navigator.notification.alert('Houve um erro: ' + e.message,'','Erro');
+        }
+            
+            
+        function exibeGeo(){
+            $("#latitude").show();
+            $("#longitude").show();
+            $("#local").show();
+            $("#mensagem").hide();
+            $("#btn1").attr('disabled','disabled');
+		    $("#btn2").removeAttr('disabled');
+
 			
 
-				//verifica qual checkbox esta selecionado e soma um valor na media	
-		    	if(document.med.alg.checked)
-			    {
-				     total +=  100;					
-				}
-				if(document.med.java.checked)
-				{
-				     total += 20;				
-				}
-			    if(document.med.php.checked)
-				{
-				     total += 45;				
-				}
-				if(document.med.delphi.checked)
-				{
-				     total += 30;				
-				}
-				if(document.med.and.checked)
-				{
-				     total += 25;				
-				}
-	
-				document.med.resultado.value = 'Seu total é '  + total  ;
-					 
-		 }
+            
+            
+        }
 		</script>
+		
+		<style>
+		
+		
+		
+		
+		     #rodape
+			 {
+			 
+			     position:absolute;
+				 width: 100%;
+				 bottom: 0;
+			 
+			 }
+		
+		
+		</style>
+		
+		
+		
+		    </head>
+    <body>
 	
-</head>
-
-
-<body>
-<h3>Calculo de Produtos</h3>
-	<form name="med" method="post" action="">
-	<table class="tabela1">
-     <tr>
-	    <p>Escolha as suas video aulas: </p>
-	    <td><input type="checkbox" name="alg" value="trabalho" >Algoritmos R$100,00<br>
-		        <input type="checkbox" name="java" value="lista" >Java R$ 20,00<br>
-			   <input type="checkbox" name="php"" value="prova" checked >PHP R$ 45,00<br>
-			   <input type="checkbox" name="delphi" value="seminario" >Delphi R$30,00<br>
-			   <input type="checkbox" name="and" value="seminario" >Android R$25,00<br>
-			   </td>			   
-	  </tr>
-
-	     <tr><td><input type="text" class="res" name="resultado" value=""></td></tr>
-	</table>	
-	      <input type="button" class="botao1" name="Calcular" value="Calcular" onclick="calcularmedia()">
-   </form>
-
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript">
-        app.initialize();
+	
+        <div data-role="page" id="principal">
+        
+            <div data-role="header">
+                <h1>Meu App v. 1.0.0</h1>
+            </div>
+            
+            <div data-role="main" id="conteudo" class="ui-content">
+                
+                <div id="latitude"></div>
+                <div id="longitude"></div>
+                <div id="local"></div>
+                <div id="mensagem"></div>
+                
+                <button id="btn1" onclick="exibeGeo()">Exibir Geolocalização</button>
+                   <button id="btn2" onclick="location.href='mapa.html'">Exibir Mapa</button>
+             
+            
+            </div>
+            
+            <div data-role="footer" id="rodape">
+                <h1>Todos os direitos reservados</h1>
+            
+            </div>
+        
+    </div>
+	     <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+		 <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>	
+         app.initialize();
     </script>
 </body>
 
