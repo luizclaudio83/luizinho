@@ -53,6 +53,8 @@
             $("#btn1").attr('disabled','disabled');
             $("#btn2").attr('disabled','disabled');
             $("#mensagem").html("Aguarde....");
+			//acrescentar exibefoto
+		    $("#exibeFoto").attr('src','');
 
             
             
@@ -118,13 +120,72 @@
             $("#local").show();
             $("#mensagem").hide();
             $("#btn1").attr('disabled','disabled');
-		    $("#btn2").removeAttr('disabled');
-
-			
-
-            
+		    $("#btn2").removeAttr('disabled');		   
             
         }
+		
+		//acrescentar a função fazerfoto, fotosucesso e fototerro e abrir foto
+		
+		  function fazerFoto(){
+            
+            navigator.vibrate([300]);
+            
+            var opFoto = {
+                quality:50,
+                sourceType:Camera.PictureSourceType.CAMERA,
+                destinationType:Camera.DestinationType.FILE_URI,
+                saveToPhotoAlbum:true,
+                encodingType:Camera.EncodingType.JPEG,
+                mediaType:Camera.MediaType.PICTURE,
+                targetWidth:1200,
+                targetHeight:800
+            }
+            
+            navigator.camera.getPicture(fotoSucesso,fotoErro,opFoto);            
+            
+        }
+		
+		            
+        function fotoSucesso(foto) {
+            
+            //alert (foto);
+            //para execcutar no celular
+           $("#exibeFoto").attr('src',foto);
+			//para executar no browser
+           // $("#exibeFoto").attr('src','data:image/jpeg;base64,' + foto);
+            
+        }
+            
+        function fotoErro(e) {
+            alert ("Houve um erro: " + e.message);
+        }
+           
+		
+		 function abrirGaleria(){
+            
+            navigator.vibrate([300]);
+            
+            var opFoto = {
+                quality:50,
+                sourceType:Camera.PictureSourceType.PHOTOLIBRARY,
+                destinationType:Camera.DestinationType.FILE_URI,
+                mediaType:Camera.MediaType.PICTURE
+            }
+            
+            navigator.camera.getPicture(galeriaSucesso,galeriaErro, opFoto);
+        }
+		
+		         
+        function galeriaSucesso(foto){
+            $("#exibeFoto").attr('src', foto);
+            
+        }
+            
+        function galeriaErro(e) {
+            alert ("Houve um erro: " + e.message);
+        }
+		
+		
 		</script>
 		
 		<style>
@@ -140,6 +201,12 @@
 				 bottom: 0;
 			 
 			 }
+			 
+			 
+			        #exibeFoto{
+                width:100%;
+            }
+            
 		
 		
 		</style>
@@ -164,7 +231,9 @@
                 <div id="mensagem"></div>
                 
                 <button id="btn1" onclick="exibeGeo()">Exibir Geolocalização</button>
-                   <button id="btn2" onclick="location.href='mapa.html'">Exibir Mapa</button>
+                <button id="btn2" onclick="location.href='mapa.html'">Exibir Mapa</button>
+				<!-- acerscentar um botão para camera -->
+				 <button id="btn3" onclick="location.href='index.html#camera'">Câmera</button>
              
             
             </div>
@@ -175,6 +244,33 @@
             </div>
         
     </div>
+	
+	
+	<!-- copiar a div superior e colar e alterar o id para camera -->
+	
+	<div data-role="page" id="camera">
+        
+            <div data-role="header">
+                <h1>Meu App v. 1.0.0</h1>
+            </div>
+            
+            <div data-role="main" id="conteudo" class="ui-content">
+                
+                <img id="exibeFoto">
+                
+                <button id="btn4" onclick="fazerFoto()">Fazer Foto</button>
+                <button id="btn5" onclick="abrirGaleria()">Abrir Galeria</button>
+                <button id="btn6" onclick="location.href='index.html#principal'">Voltar</button>
+            
+            </div>
+            
+            <div data-role="footer" id="rodape">
+                <h1>Todos os direitos reservados</h1>
+            
+            </div>
+			
+			
+			
 	     <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
 		 <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>	
